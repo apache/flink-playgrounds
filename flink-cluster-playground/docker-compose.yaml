@@ -1,0 +1,72 @@
+################################################################################
+#  Licensed to the Apache Software Foundation (ASF) under one
+#  or more contributor license agreements.  See the NOTICE file
+#  distributed with this work for additional information
+#  regarding copyright ownership.  The ASF licenses this file
+#  to you under the Apache License, Version 2.0 (the
+#  "License"); you may not use this file except in compliance
+#  with the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+version: "2.1"
+services:
+  client:
+    image: flink:1.9-scala_2.11
+    command: "flink run -d -p 2 /opt/flink/examples/streaming/ClickEventCount.jar --bootstrap.servers kafka:9092 --checkpointing --event-time"
+    depends_on:
+      - jobmanager
+      - kafka
+    volumes:
+      - ./conf:/opt/flink/conf
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+  clickevent-generator:
+    image: flink:1.9-scala_2.11
+    command: "java -classpath /opt/flink/examples/streaming/ClickEventCount.jar:/opt/flink/lib/* org.apache.flink.streaming.examples.windowing.clickeventcount.ClickEventGenerator --bootstrap.servers kafka:9092 --topic input"
+    depends_on:
+      - kafka
+  jobmanager:
+    image: flink:1.9-scala_2.11
+    command: "jobmanager.sh start-foreground"
+    ports:
+      - 8081:8081
+    volumes:
+      - ./conf:/opt/flink/conf
+      - flink-checkpoint-directory:/tmp/flink-checkpoint-directory
+      - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+  taskmanager:
+    image: flink:1.9-scala_2.11
+    depends_on:
+      - jobmanager
+    command: "taskmanager.sh start-foreground"
+    volumes:
+      - ./conf:/opt/flink/conf
+      - flink-checkpoint-directory:/tmp/flink-checkpoint-directory
+      - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+  kafka:
+    image: wurstmeister/kafka:2.12-2.2.1
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: "input:2:1, output:2:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    ports:
+      - 9094:9094
+volumes:
+  flink-checkpoint-directory:
