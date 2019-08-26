@@ -18,11 +18,10 @@
 
 package org.apache.flink.playgrounds.ops.clickcount;
 
-import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.java.utils.ParameterTool;
-
 import org.apache.flink.playgrounds.ops.clickcount.records.ClickEvent;
 import org.apache.flink.playgrounds.ops.clickcount.records.ClickEventSerializationSchema;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -67,12 +66,13 @@ public class ClickEventGenerator {
 		KafkaProducer<byte[], byte[]> producer = new KafkaProducer<>(kafkaProps);
 
 		ClickIterator clickIterator = new ClickIterator();
-		SerializationSchema<ClickEvent> clickSerializer = new ClickEventSerializationSchema();
 
 		while (true) {
 
-			byte[] message = clickSerializer.serialize(clickIterator.next());
-			ProducerRecord<byte[], byte[]> record = new ProducerRecord<>(topic, message);
+			ProducerRecord<byte[], byte[]> record = new ClickEventSerializationSchema(topic).serialize(
+					clickIterator.next(),
+					null);
+
 			producer.send(record);
 
 			Thread.sleep(DELAY);
