@@ -86,10 +86,11 @@ public class ClickEventCount {
 			.aggregate(new CountingAggregator(),
 				new ClickEventStatisticsCollector())
 			.name("ClickEvent Counter")
-			.addSink(new FlinkKafkaProducer<ClickEventStatistics>(
+			.addSink(new FlinkKafkaProducer<>(
 				outputTopic,
-				new ClickEventStatisticsSerializationSchema(),
-				kafkaProps))
+				new ClickEventStatisticsSerializationSchema(outputTopic),
+				kafkaProps,
+				FlinkKafkaProducer.Semantic.AT_LEAST_ONCE))
 			.name("ClickEventStatistics Sink");
 
 		env.execute("Click Event Count");
