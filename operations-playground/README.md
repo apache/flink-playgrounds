@@ -47,4 +47,4 @@ docker-compose down
 ## Further instructions
 
 The playground setup and more detailed instructions are presented in the
-["Getting Started" guide](https://ci.apache.org/projects/flink/flink-docs-release-1.8/getting-started/docker-playgrounds/flink-operations-playground.html) of Flink's documentation.
+["Getting Started" guide](https://ci.apache.org/projects/flink/flink-docs-master/getting-started/docker-playgrounds/flink-operations-playground.html) of Flink's documentation.
