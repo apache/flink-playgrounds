@@ -22,7 +22,7 @@ under the License.
 
 	<groupId>org.apache.flink</groupId>
 	<artifactId>flink-playground-clickcountjob</artifactId>
-	<version>1-FLINK-1.9_2.11</version>
+	<version>2-FLINK-1.9_2.11</version>
 
 	<name>flink-playground-clickcountjob</name>
 	<packaging>jar</packaging>
