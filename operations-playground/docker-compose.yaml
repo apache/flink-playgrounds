@@ -71,3 +71,11 @@ services:
       - 9094:9094
 volumes:
   flink-checkpoints-directory:
+  
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.0.1/16
