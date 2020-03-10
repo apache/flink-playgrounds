@@ -20,6 +20,7 @@ jobmanager.rpc.address: jobmanager
 blob.server.port: 6124
 query.server.port: 6125
 
+taskmanager.memory.process.size: 1568m
 taskmanager.numberOfTaskSlots: 2
 
 state.backend: filesystem
