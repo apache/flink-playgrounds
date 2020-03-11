@@ -32,7 +32,7 @@ RUN mvn clean install
 # Build Operations Playground Image
 ###############################################################################
 
-FROM flink:1.9.0-scala_2.11
+FROM flink:1.9.2-scala_2.11
 
 WORKDIR /opt/flink/bin
 
