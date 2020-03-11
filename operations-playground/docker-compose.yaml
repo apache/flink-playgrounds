@@ -35,7 +35,7 @@ services:
     depends_on:
       - kafka
   jobmanager:
-    image: flink:1.10-scala_2.11
+    image: flink:1.10.0-scala_2.11
     command: "jobmanager.sh start-foreground"
     ports:
       - 8081:8081
@@ -46,7 +46,7 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
-    image: flink:1.10-scala_2.11
+    image: flink:1.10.0-scala_2.11
     depends_on:
       - jobmanager
     command: "taskmanager.sh start-foreground"
