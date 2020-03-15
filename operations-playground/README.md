@@ -50,6 +50,33 @@ The playground setup and more detailed instructions are presented in the
 ["Getting Started" guide](https://ci.apache.org/projects/flink/flink-docs-release-1.10/getting-started/docker-playgrounds/flink-operations-playground.html) of Flink's documentation.
 
 ----
+## Python ClickEvent Example
+
+The `./docker/python` folder contains a pyFlink example of the Click Event Counter example. It is similar to the Java example in the Playground with the following differences:
+- It is implemented in python using `pyFlink` and `kafka-python` libraries
+- It sents about 1k events, randomized across the 6 click event types; this is different from the deterministic behavior of the java example, where it's 1k events per window per event type. 
+
+To run:
+
+```
+docker-compose -f pyflink_docker-compose.yaml up -d
+```
+
+Then open the browser to [http://localhost:8081](http://localhost:8081) to see that this job is complete. To see the output, one needs to log on to the `taskmanager` container while the `docker-compose` is still up. 
+
+To check output 
+
+```
+docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic output
+```
+
+To shut down the docker-compose example, 
+```
+docker-compose down
+```
+
+
+----
 ## Python Batch Example
 
 The `./docker/python` folder contains a pyFlink example from https://ci.apache.org/projects/flink/flink-docs-master/getting-started/walkthroughs/python_table_api.html

@@ -25,13 +25,39 @@ services:
   client:
     build: ../docker/ops-playground-image
     image: apache/flink-ops-playground:1-FLINK-1.10-scala_2.11
-    command: "flink run -d -py ./WordCount.py"
+#    command: "flink run -d -py ./WordCount.py"
+    command: "flink run -d -p 2 /opt/ClickCountJob.jar --bootstrap.servers kafka:9092 --checkpointing --event-time"
     depends_on:
       - jobmanager
+      - kafka
     volumes:
       - ./conf:/opt/flink/conf
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - EVENTS_PER_SECOND=${EVENTS_PER_SECOND}
+
+  # ClickEventGenerator.py
+  # this is a python script that generates simulated click events
+  # and send to Kafka
+  clickevent-generator:
+    image: apache/flink-ops-playground:1-FLINK-1.10-scala_2.11
+    command: "python ./ClickEventGenerator.py"
+    # stay on for debugging
+    # log in to the docker using 
+    #    docker-compose exec clickevent-generator /bin/bash
+    # or start the generator manually with 
+    #    docker-compose exec clickevent-generator python ClickEventGenerator.py
+    # command: "/bin/bash"
+    # stdin_open: true
+    # tty: true    
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - EVENTS_PER_SECOND=${EVENTS_PER_SECOND}
 
   # jobmanager
   # we use the same image as the client, which includes python and pyFlink
@@ -62,5 +88,23 @@ services:
       - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
+  
+  # Kafka setup
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+  kafka:
+    image: wurstmeister/kafka:2.12-2.2.1
+    environment:
+      # see https://github.com/wurstmeister/kafka-docker/blob/master/README.md
+      # see bug at https://github.com/dpkp/kafka-python/issues/607#issuecomment-493059793
+      # KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1 <-- doesn't solve the problem
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: "input:2:1, output:2:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    ports:
+      - 9094:9094
 volumes:
   flink-checkpoints-directory:
