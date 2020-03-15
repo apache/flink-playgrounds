@@ -48,3 +48,35 @@ docker-compose down
 
 The playground setup and more detailed instructions are presented in the
 ["Getting Started" guide](https://ci.apache.org/projects/flink/flink-docs-release-1.10/getting-started/docker-playgrounds/flink-operations-playground.html) of Flink's documentation.
+
+----
+## Python Batch Example
+
+The `./docker/python` folder contains a pyFlink example from https://ci.apache.org/projects/flink/flink-docs-master/getting-started/walkthroughs/python_table_api.html
+
+- the [`WordCount.py`](./docker/python/WordCount.py) file contains the source from the above page
+- the [`input.txt`](./docker/python/input.txt) file is the input text file, to be mapped to `input` in the docker image (Windows doesn't like files without extention)
+- [`Dockerfile`](./docker/Dockerfile) is modified to install `python` and `pyFlink`
+- [`pyflink_docker-compose.yaml`](./operations-playground/pyflink_docker-compose.yaml) is created for this example. 
+
+To run this example, on your host computer, start a terminal and change directory to where you have `pyflink_docker-compose.yaml`, then
+
+```
+docker-compose -f pyflink_docker-compose.yaml up -d
+```
+
+Then open the browser to [http://localhost:8081](http://localhost:8081) to see that this job is complete. To see the output, one needs to log on to the `taskmanager` container while the `docker-compose` is still up. 
+
+```
+docker-compose -f pyflink_docker-compose.yaml exec taskmanager /bin/bash
+```
+Then
+```
+more /tmp/output
+```
+To exit the docker commandline interface, type `exit`
+
+To shut down the docker-compose example, 
+```
+docker-compose down
+```
