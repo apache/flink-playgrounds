@@ -60,7 +60,7 @@ To run:
 
 ```
 docker-compose -f pyflink_docker-compose.yaml up -d
-``
+```
 
 Then open the browser to [http://localhost:8081](http://localhost:8081) to see that this job is complete. To see the output, one needs to log on to the `taskmanager` container while the `docker-compose` is still up. 
 
