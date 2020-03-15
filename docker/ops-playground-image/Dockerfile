@@ -34,6 +34,15 @@ RUN mvn clean install
 
 FROM flink:1.10.0-scala_2.11
 
+# Install Python
+RUN apt-get update && \
+    apt-get -y install curl python3 python3-distutils && \
+    ln -s /usr/bin/python3 /usr/bin/python; 
+# install pyFlink
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+RUN python ./get-pip.py
+RUN python -m pip install apache-flink
+
 WORKDIR /opt/flink/bin
 
 # Copy Click Count Job
