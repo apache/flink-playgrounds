@@ -47,3 +47,7 @@ WORKDIR /opt/flink/bin
 
 # Copy Click Count Job
 COPY --from=builder /opt/flink-playground-clickcountjob/target/flink-playground-clickcountjob-*.jar /opt/ClickCountJob.jar
+
+# Copy pyflink word count example
+COPY ./python/WordCount.py WordCount.py
+COPY ./python/input.txt /tmp/input
