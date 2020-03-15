@@ -54,9 +54,9 @@ The playground setup and more detailed instructions are presented in the
 
 The `./docker/python` folder contains a pyFlink example from https://ci.apache.org/projects/flink/flink-docs-master/getting-started/walkthroughs/python_table_api.html
 
-- the [`WordCount.py`](../docker/python/WordCount.py) file contains the source from the above page
-- the [`input.txt`](../docker/python/input.txt) file is the input text file, to be mapped to `input` in the docker image (Windows doesn't like files without extention)
-- [`Dockerfile`](../docker/Dockerfile) is modified to install `python` and `pyFlink`
+- the [`WordCount.py`](../docker/ops-playground-image/python/WordCount.py) file contains the source from the above page
+- the [`input.txt`](../docker/ops-playground-image/python/input.txt) file is the input text file, to be mapped to `input` in the docker image (Windows doesn't like files without extention)
+- [`Dockerfile`](../docker/ops-playground-image/Dockerfile) is modified to install `python` and `pyFlink`
 - [`pyflink_docker-compose.yaml`](pyflink_docker-compose.yaml) is created for this example. 
 
 To run this example, on your host computer, start a terminal and change directory to where you have `pyflink_docker-compose.yaml`, then
