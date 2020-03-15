@@ -13,6 +13,8 @@ Currently, the following playgrounds are available:
 Flink job. The playground is presented in detail in the
 ["Getting Started" guide](https://ci.apache.org/projects/flink/flink-docs-release-1.10/getting-started/docker-playgrounds/flink-operations-playground.html) of Flink's documentation.
 
+* The **PyFlink Batch Example** is under the `docker\python` directory. See the [`README.md`](./operations-playground/README.md) for details. 
+
 * The interactive SQL playground is still under development and will be added shortly.
 
 ## About
