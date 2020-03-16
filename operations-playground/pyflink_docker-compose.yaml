@@ -25,8 +25,16 @@ services:
   client:
     build: ../docker/ops-playground-image
     image: apache/flink-ops-playground:1-FLINK-1.10-scala_2.11
-#    command: "flink run -d -py ./WordCount.py"
-    command: "flink run -d -p 2 /opt/ClickCountJob.jar --bootstrap.servers kafka:9092 --checkpointing --event-time"
+    # command: "flink run -d -py ./WordCount.py"
+    # command: "flink run -d -p 2 /opt/ClickCountJob.jar --bootstrap.servers kafka:9092 --checkpointing --event-time"
+    # stay on for debugging
+    # log in to the docker using 
+    #    docker-compose exec client /bin/bash
+    # or start the generator manually with 
+    #    docker-compose exec client python ClickEventCount.py
+    command: "/bin/bash"
+    stdin_open: true
+    tty: true    
     depends_on:
       - jobmanager
       - kafka
@@ -95,9 +103,6 @@ services:
   kafka:
     image: wurstmeister/kafka:2.12-2.2.1
     environment:
-      # see https://github.com/wurstmeister/kafka-docker/blob/master/README.md
-      # see bug at https://github.com/dpkp/kafka-python/issues/607#issuecomment-493059793
-      # KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1 <-- doesn't solve the problem
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
