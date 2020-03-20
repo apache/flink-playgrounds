@@ -33,3 +33,27 @@ Sounds likwe need to copy the `flink-connector-kafka-base*.jar` and `original-fl
 
 According to the above post, we need to reinstall `pyflink` from the above source. But maybe adding the JAR files to the right place will do the trick?
 
+### Fixing JAR dependencies
+
+The following [Dockerfile_pylink_dep](Dockerfile_pylink_dep) fixed the above issue (https://github.com/garyfeng/flink-playgrounds/issues/1 as well as realted issues such as https://github.com/garyfeng/flink-playgrounds/issues/2) by copying in flink-connectors, flink-formats, and other missing JARs.
+
+It requires a two-stage building strategy, where we first compile the flink system, including `flink-python`, then copy the JARs to the `flink-python`. The next stage starts with the official flink docker, install python, and the custom `pyflink` library from the previous step. 
+
+### Giving up for now
+This works, but then we run into additional java errors for creating a streaming table environment (https://github.com/garyfeng/flink-playgrounds/issues/3).
+
+It looks like the product is just not ready. 
+
+## Apache Beam
+
+Analternative is to use `Apache Beam` to program the pipeline, and use `flink` as a runner. 
+
+https://flink.apache.org/ecosystem/2020/02/22/apache-beam-how-beam-runs-on-top-of-flink.html
+
+https://beam.apache.org/get-started/try-apache-beam/
+
+https://beam.apache.org/documentation/runners/direct/
+
+https://github.com/apache/beam/tree/master/sdks/python/apache_beam/examples
+
+
