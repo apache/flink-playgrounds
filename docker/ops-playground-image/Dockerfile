@@ -43,6 +43,10 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python ./get-pip.py
 RUN python -m pip install apache-flink kafka-python
 
+# to fix #1: Kafka connector not working for pylink
+# https://github.com/garyfeng/flink-playgrounds/issues/1
+COPY ./python/flink-connector-kafka-base_2.11-1.10.0.jar /usr/local/lib/python3.7/dist-packages/pyflink/lib/flink-connector-kafka-base_2.11-1.10.0.jar
+
 WORKDIR /opt/flink/bin
 
 # Copy Click Count Job
