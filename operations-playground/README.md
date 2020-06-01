@@ -36,6 +36,11 @@ docker-compose up -d
 
 You can check if the playground was successfully started by accessing the WebUI of the Flink cluster at [http://localhost:8081](http://localhost:8081).
 
+** for Windows Users **
+
+If you get the error "Unhandled exception: Filesharing has been cancelled", you should configure the file sharing in Docker Desktop before starting.
+In Settings > Resources > File Sharing, add the operations-playground/conf directory.
+
 ### Stopping the Playground
 
 To stop the playground, run the following command
