@@ -16,31 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.flink.playground.datagen;
+package org.apache.flink.playground.datagen.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDateTime;
 
-/** A basic data generator for continuously writing data into a Kafka topic. */
-public class DataGenerator {
+/** A simple financial transaction. */
+public class Transaction {
+  public long accountId;
 
-  private static final Logger LOG = LoggerFactory.getLogger(DataGenerator.class);
+  public int amount;
 
-  private static final String KAFKA = "kafka:9092";
-
-  private static final String TOPIC = "transactions";
-
-  public static void main(String[] args) {
-    Producer producer = new Producer(KAFKA, TOPIC);
-
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  LOG.info("Shutting down");
-                  producer.close();
-                }));
-
-    producer.run();
-  }
+  public LocalDateTime timestamp;
 }
