@@ -16,31 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.flink.playground.datagen;
+package org.apache.flink.playground.datagen.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import org.apache.kafka.common.serialization.Serializer;
 
-/** A basic data generator for continuously writing data into a Kafka topic. */
-public class DataGenerator {
+/** Serializes a {@link Transaction} into a CSV record. */
+public class TransactionSerializer implements Serializer<Transaction> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DataGenerator.class);
+  private static final DateTimeFormatter formatter =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
-  private static final String KAFKA = "kafka:9092";
+  @Override
+  public void configure(Map<String, ?> map, boolean b) {}
 
-  private static final String TOPIC = "transactions";
+  @Override
+  public byte[] serialize(String s, Transaction transaction) {
+    String csv =
+        String.format(
+            "%s, %s, %s",
+            transaction.accountId, transaction.amount, transaction.timestamp.format(formatter));
 
-  public static void main(String[] args) {
-    Producer producer = new Producer(KAFKA, TOPIC);
-
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  LOG.info("Shutting down");
-                  producer.close();
-                }));
-
-    producer.run();
+    return csv.getBytes();
   }
+
+  @Override
+  public void close() {}
 }

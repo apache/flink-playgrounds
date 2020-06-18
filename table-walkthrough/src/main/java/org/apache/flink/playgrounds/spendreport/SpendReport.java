@@ -22,12 +22,13 @@ import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.Tumble;
+import org.apache.flink.table.expressions.TimeIntervalUnit;
 
 import static org.apache.flink.table.api.Expressions.*;
 
 public class SpendReport {
 
-    public static Table report(Table rows) {
+    public static Table report(Table transactions) {
         throw new UnimplementedException();
     }
 

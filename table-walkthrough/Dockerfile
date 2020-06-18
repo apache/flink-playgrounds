@@ -42,5 +42,4 @@ COPY --from=builder /opt/target/spend-report-*.jar /opt/flink/usrlib/spend-repor
 RUN echo "execution.checkpointing.interval: 10s" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.object-reuse: true" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.time-characteristic: EventTime" >> /opt/flink/conf/flink-conf.yaml; \
-    sed -i -e 's/taskmanager.memory.process.size: 1568m/taskmanager.memory.process.size: 1728m/g' /opt/flink/conf/flink-conf.yaml; \
     echo "taskmanager.memory.jvm-metaspace.size: 256m" >> /opt/flink/conf/flink-conf.yaml;

@@ -18,20 +18,18 @@
 
 package org.apache.flink.playground.datagen;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Random;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
+import org.apache.flink.playground.datagen.model.Transaction;
+import org.apache.flink.playground.datagen.model.TransactionSerializer;
+import org.apache.flink.playground.datagen.model.TransactionSupplier;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
+/** Generates CSV transaction records at a rate */
 public class Producer implements Runnable, AutoCloseable {
 
   private static final DateTimeFormatter formatter =
@@ -51,36 +49,20 @@ public class Producer implements Runnable, AutoCloseable {
 
   @Override
   public void run() {
-    KafkaProducer<Long, String> producer = new KafkaProducer<>(getProperties());
+    KafkaProducer<Long, Transaction> producer = new KafkaProducer<>(getProperties());
 
     Throttler throttler = new Throttler(100);
 
-    Random generator = new Random();
-
-    Iterator<Long> accounts =
-        Stream.generate(() -> Stream.of(1L, 2L, 3L, 4L, 5L))
-            .flatMap(UnaryOperator.identity())
-            .iterator();
-
-    Iterator<LocalDateTime> timestamps =
-        Stream.iterate(
-                LocalDateTime.of(2000, 1, 1, 1, 0),
-                time -> time.plusMinutes(5).plusSeconds(generator.nextInt(58) + 1))
-            .iterator();
+    TransactionSupplier transactions = new TransactionSupplier();
 
     while (isRunning) {
 
-      Long account = accounts.next();
-      LocalDateTime timestamp = timestamps.next();
-      long millis = timestamp.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+      Transaction transaction = transactions.get();
 
-      String transaction =
-          String.format(
-              "%s, %s, %s",
-              account.toString(), generator.nextInt(1000), timestamp.format(formatter));
+      long millis = transaction.timestamp.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
 
-      ProducerRecord<Long, String> record =
-          new ProducerRecord<>(topic, null, millis, account, transaction);
+      ProducerRecord<Long, Transaction> record =
+          new ProducerRecord<>(topic, null, millis, transaction.accountId, transaction);
       producer.send(record);
 
       try {
@@ -104,7 +86,7 @@ public class Producer implements Runnable, AutoCloseable {
     props.put(ProducerConfig.ACKS_CONFIG, "all");
     props.put(ProducerConfig.RETRIES_CONFIG, 0);
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
-    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, TransactionSerializer.class);
 
     return props;
   }

@@ -18,6 +18,7 @@
 
 package org.apache.flink.playground.datagen;
 
+/** A data throttler that controls the rate at which data is written out to Kafka. */
 final class Throttler {
 
   private final long throttleBatchSize;
