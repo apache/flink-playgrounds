@@ -16,11 +16,12 @@
 # limitations under the License.
 ################################################################################
 
+jobmanager.memory.process.size: 1600Mb
 jobmanager.rpc.address: jobmanager
 blob.server.port: 6124
 query.server.port: 6125
 
-taskmanager.memory.process.size: 1568m
+taskmanager.memory.process.size: 1728Mb
 taskmanager.numberOfTaskSlots: 2
 
 state.backend: filesystem
