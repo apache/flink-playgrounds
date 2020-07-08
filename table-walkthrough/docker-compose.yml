@@ -33,7 +33,7 @@ services:
       - kafka
       - mysql
   taskmanager:
-    image: apache/flink-playground-walkthrough:1-FLINK-1.11-scala_2.11
+    image: apache/flink-table-walkthrough:1-FLINK-1.11-scala_2.11
     build: .
     expose:
       - "6121"

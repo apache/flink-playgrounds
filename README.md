@@ -13,7 +13,7 @@ Currently, the following playgrounds are available:
 Flink job. The playground is presented in detail in
 ["Flink Operations Playground"](https://ci.apache.org/projects/flink/flink-docs-release-1.11/try-flink/flink-operations-playground.html), which is part of the _Try Flink_ section of the Flink documentation.
 
-* The interactive SQL playground is still under development and will be added shortly.
+* The **Table Walkthrough** (in the `table-walkthrough` folder) shows to use the Table API to build an analytics pipeline that reads streaming data from Kafka and writes results to MySQL, along with a real-time dashboard in Grafana. The walkthrough is presented in detail in ["Real Time Reporting with the Table API"](https://ci.apache.org/projects/flink/flink-docs-release-1.11/try-flink/table_api.html), which is part of the _Try Flink_ section of the Flink documentation.
 
 ## About
 
