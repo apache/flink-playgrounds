@@ -15,6 +15,8 @@ Flink job. The playground is presented in detail in
 
 * The **Table Walkthrough** (in the `table-walkthrough` folder) shows to use the Table API to build an analytics pipeline that reads streaming data from Kafka and writes results to MySQL, along with a real-time dashboard in Grafana. The walkthrough is presented in detail in ["Real Time Reporting with the Table API"](https://ci.apache.org/projects/flink/flink-docs-release-1.11/try-flink/table_api.html), which is part of the _Try Flink_ section of the Flink documentation.
 
+* The **PyFlink Walkthrough** (int the `pyflink-walkthrough` folder) guides you to learn about how to manage and run PyFlink Jobs. The pipeline of this walkthrough reads data from Kafka, performs aggregations and writes results to Elasticsearch visualized via Kibana.
+
 ## About
 
 Apache Flink is an open source project of The Apache Software Foundation (ASF).
