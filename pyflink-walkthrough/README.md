@@ -2,27 +2,26 @@
 
 ## Background
 
-In this playground, you will learn how to manage and run PyFlink Jobs. The pipeline of this walkthrough reads data from Kafka, performs aggregations and writes results to Elasticsearch visualized via Kibana. The environment is managed by Docker so that all you need is a docker on your computer.
+In this playground, you will learn how to build and run an end-to-end PyFlink pipeline for data analytics, covering the following steps:
 
-- Kafka
+* Reading data from a Kafka source;
+* Creating data using a [UDF](https://ci.apache.org/projects/flink/flink-docs-release-1.11/dev/python/table-api-users-guide/udfs/python_udfs.html);
+* Performing a simple aggregation over the source data;
+* Writing the results to Elasticsearch and visualizing them in Kibana.
 
-Kafka is used to store input data in this walkthrough. The script [generate_source_data.py](https://github.com/hequn8128/pyflink-walkthrough/blob/master/generate_source_data.py) is used to generate transaction data and writes into the payment_msg kafka topic. Each record includes 5 fields: 
-```text
-{"createTime": "2020-08-12 06:29:02", "orderId": 1597213797, "payAmount": 28306.44976403719, "payPlatform": 0, "provinceId": 4}
-```
-```text
-createTime: The creation time of the transaction. 
-orderId: The id of the current transaction.
-payAmount: The pay amount of the current transaction.
-payPlatform: The platform used to pay the order, pc or mobile.
-provinceId: The id of the province for the user. 
-```
+### Kafka
+You will be using Kafka to store sample input data about payment transactions. A simple data generator [generate_source_data.py](generator/generate_source_data.py) is provided to
+continuously write new records to the `payment_msg` Kafka topic. Each record is structured as follows:
+ 
+`{"createTime": "2020-08-12 06:29:02", "orderId": 1597213797, "payAmount": 28306.44976403719, "payPlatform": 0, "provinceId": 4}`
 
-- Generator 
+* `createTime`: The creation time of the transaction. 
+* `orderId`: The id of the current transaction.
+* `payAmount`: The pay amount of the current transaction.
+* `payPlatform`: The platform used to pay the order, pc or mobile.
+* `provinceId`: The id of the province for the user. 
 
-A simple data generator is provided that continuously writes new records into Kafka. 
-You can use the following command to read data in kafka and check whether the data is generated correctly.
-
+You can use the following command to read data from the Kafka topic and check whether it's generated correctly:
 ```shell script
 $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic payment_msg
 {"createTime":"2020-07-27 09:25:32.77","orderId":1595841867217,"payAmount":7732.44,"payPlatform":0,"provinceId":3}
@@ -32,27 +31,32 @@ $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9
 {"createTime":"2020-07-27 09:25:34.698","orderId":1595841867221,"payAmount":37504.42,"payPlatform":0,"provinceId":0}
 ```
 
-- PyFlink
+### PyFlink
 
-The transaction data is processed by a PyFlink job, [payment_msg_proccessing.py](https://github.com/hequn8128/pyflink-walkthrough/blob/master/payment_msg_proccessing.py). The job maps the province id to province name for better demonstration using a Python UDF and then sums the payment for each province using a group aggregate. 
+The transaction data will be processed with PyFlink using the Python script [payment_msg_processing.py](payment_msg_proccessing.py).
+This script will first map the `provinceId` in the input records to its corresponding province name
+using a Python UDF, and them sum the transaction amount for each province using a group aggregate. 
 
-- ElasticSearch
+### ElasticSearch
 
 ElasticSearch is used to store upstream processing results and provide efficient query service.
 
-- Kibana
+### Kibana
 
-Kibana is an open source data visualization dashboard for ElasticSearch. We use it to visualize our processing results.
+Kibana is an open source data visualization dashboard for ElasticSearch. You will use it to visualize 
+the results of your PyFlink pipeline.
 
 ## Setup
 
-The pyflink-walkthrough requires a custom Docker image, as well as public images for Flink, Elasticsearch, Kafka, and ZooKeeper. 
+As mentioned, the environment for this walkthrough is based on Docker Compose; and uses a custom image
+to spin up Flink (JobManager+TaskManager), Kafka+Zookeeper, the data generator and Elasticsearch+Kibana
+containers.
 
-The [docker-compose.yaml](https://github.com/hequn8128/pyflink-walkthrough/blob/master/docker-compose.yml) file of the pyflink-walkthrough is located in the `pyflink-walkthrough` root directory.
+Your can find the [docker-compose.yaml](docker-compose.yml) file of the pyflink-walkthrough is located in the `pyflink-walkthrough` root directory.
 
-### Building the custom Docker image
+### Building the Docker image
 
-Build the Docker image by running
+First, build the Docker image by running:
 
 ```bash
 docker-compose build
@@ -60,43 +64,44 @@ docker-compose build
 
 ### Starting the Playground
 
-Once you built the Docker image, run the following command to start the playground
+Once the Docker image build is complete, run the following command to start the playground:
 
 ```bash
 docker-compose up -d
 ```
 
-You can check if the playground was successfully started by accessing the WebUI of(You may need to wait about 1 min before all services come up.):
+One way of checking if the playground was successfully started is accessing some of the services exposed:
 
 1. visiting Flink Web UI [http://localhost:8081](http://localhost:8081).
 2. visiting Elasticsearch [http://localhost:9200](http://localhost:9200).
 3. visiting Kibana [http://localhost:5601](http://localhost:5601).
 
+**Note:** you may need to wait around 1 minute before all the services come up.
 
 ### Stopping the Playground
 
-To stop the playground, run the following command
+To stop the playground, run the following command:
 
 ```bash
 docker-compose down
 ```
 
 
-## Run jobs
+## Runing the PyFlink job
 
 1. Submit the PyFlink job.
 ```shell script
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```
 
-2. Open [kibana ui](http://localhost:5601) and choose the dashboard: payment_dashboard
+2. Navigate to the [Kibana UI](http://localhost:5601) and choose the pre-created dashboard `payment_dashboard`.
 
 ![image](pic/dash_board.png)
 
 ![image](pic/final.png)
 
-3. Stop PyFlink job:
+3. Stop the PyFlink job:
 
-Visit [http://localhost:8081/#/overview](http://localhost:8081/#/overview) , select the job and click `Cancle`.
+Visit the Flink Web UI at [http://localhost:8081/#/overview](http://localhost:8081/#/overview) , select the job and click `Cancle` on the upper right side.
 
 ![image](pic/cancel.png)

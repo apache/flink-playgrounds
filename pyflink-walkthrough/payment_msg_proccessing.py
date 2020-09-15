@@ -31,8 +31,7 @@ def province_id_to_name(id):
 
 def log_processing():
     env = StreamExecutionEnvironment.get_execution_environment()
-    env_settings = EnvironmentSettings.Builder().use_blink_planner().build()
-    t_env = StreamTableEnvironment.create(stream_execution_environment=env, environment_settings=env_settings)
+    t_env = StreamTableEnvironment.create(stream_execution_environment=env)
     t_env.get_config().get_configuration().set_boolean("python.fn-execution.memory.managed", True)
 
     source_ddl = """
@@ -75,17 +74,15 @@ def log_processing():
             )
     """
 
-    t_env.sql_update(source_ddl)
-    t_env.sql_update(es_sink_ddl)
+    t_env.execute_sql(source_ddl)
+    t_env.execute_sql(es_sink_ddl)
     t_env.register_function('province_id_to_name', province_id_to_name)
 
     t_env.from_path("payment_msg") \
         .select("province_id_to_name(provinceId) as province, payAmount") \
         .group_by("province") \
         .select("province, sum(payAmount) as pay_amount") \
-        .insert_into("es_sink")
-
-    t_env.execute("payment_demo")
+        .execute_insert("es_sink")
 
 
 if __name__ == '__main__':
