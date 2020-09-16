@@ -17,8 +17,8 @@ continuously write new records to the `payment_msg` Kafka topic. Each record is 
 
 * `createTime`: The creation time of the transaction. 
 * `orderId`: The id of the current transaction.
-* `payAmount`: The pay amount of the current transaction.
-* `payPlatform`: The platform used to pay the order, pc or mobile.
+* `payAmount`: The amount being paid with this transaction.
+* `payPlatform`: The platform used to create this payment: pc or mobile.
 * `provinceId`: The id of the province for the user. 
 
 You can use the following command to read data from the Kafka topic and check whether it's generated correctly:
@@ -30,16 +30,20 @@ $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9
 {"createTime":"2020-07-27 09:25:34.216","orderId":1595841867220,"payAmount":15341.11,"payPlatform":0,"provinceId":1}
 {"createTime":"2020-07-27 09:25:34.698","orderId":1595841867221,"payAmount":37504.42,"payPlatform":0,"provinceId":0}
 ```
+You can also create a new topic by executing the following command:
+```shell script
+$ docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --create --topic <YOUR-TOPIC-NAME> --partitions 8 --replication-factor 1
+```
 
 ### PyFlink
 
 The transaction data will be processed with PyFlink using the Python script [payment_msg_processing.py](payment_msg_proccessing.py).
-This script will first map the `provinceId` in the input records to its corresponding province name
-using a Python UDF, and them sum the transaction amount for each province using a group aggregate. 
+This script will first map the `provinceId` in the input records to its corresponding province name using a Python UDF, 
+and then compute the sum of the transaction amounts for each province. 
 
 ### ElasticSearch
 
-ElasticSearch is used to store upstream processing results and provide efficient query service.
+ElasticSearch is used to store the upstream processing results and to provide an efficient query service.
 
 ### Kibana
 
@@ -48,8 +52,8 @@ the results of your PyFlink pipeline.
 
 ## Setup
 
-As mentioned, the environment for this walkthrough is based on Docker Compose; and uses a custom image
-to spin up Flink (JobManager+TaskManager), Kafka+Zookeeper, the data generator and Elasticsearch+Kibana
+As mentioned, the environment for this walkthrough is based on Docker Compose; It uses a custom image
+to spin up Flink (JobManager+TaskManager), Kafka+Zookeeper, the data generator, and Elasticsearch+Kibana
 containers.
 
 Your can find the [docker-compose.yaml](docker-compose.yml) file of the pyflink-walkthrough is located in the `pyflink-walkthrough` root directory.
@@ -70,7 +74,7 @@ Once the Docker image build is complete, run the following command to start the 
 docker-compose up -d
 ```
 
-One way of checking if the playground was successfully started is accessing some of the services exposed:
+One way of checking if the playground was successfully started is to access some of the services that are exposed:
 
 1. visiting Flink Web UI [http://localhost:8081](http://localhost:8081).
 2. visiting Elasticsearch [http://localhost:9200](http://localhost:9200).
@@ -87,7 +91,7 @@ docker-compose down
 ```
 
 
-## Runing the PyFlink job
+## Running the PyFlink job
 
 1. Submit the PyFlink job.
 ```shell script
@@ -102,6 +106,24 @@ $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/pa
 
 3. Stop the PyFlink job:
 
-Visit the Flink Web UI at [http://localhost:8081/#/overview](http://localhost:8081/#/overview) , select the job and click `Cancle` on the upper right side.
+Visit the Flink Web UI at [http://localhost:8081/#/overview](http://localhost:8081/#/overview) , select the job and click `Cancel` on the upper right side.
 
 ![image](pic/cancel.png)
+
+## Extension
+
+You are able to edit the [payment_msg_processing.py](payment_msg_proccessing.py) or create new PyFlink 
+projects to perform more complex processing logic locally on your operating system under the `pyflink-walkthrough` 
+directory since it is mounted on the `jobmanager` docker container. Such as:
+* Creating a new Kafka source table;
+* Creating a new index for the Elasticsearch sink;
+* Calculating the amount of transactions grouped by a 1 minute tumble window and payPlatforms.
+
+After the modification, you can submit the new job by executing the same command mentioned at 
+[Running the PyFlink Job](#running-the-pyflink-job)
+```shell script
+$ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
+```
+
+Furthermore, you can also [create new kibana dashboards](https://www.elastic.co/guide/en/kibana/7.8/dashboard-create-new-dashboard.html) 
+to visualize more charts of various dimension based on the persistent indexes in Elasticsearch.
