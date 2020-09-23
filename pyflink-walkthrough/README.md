@@ -9,6 +9,9 @@ In this playground, you will learn how to build and run an end-to-end PyFlink pi
 * Performing a simple aggregation over the source data;
 * Writing the results to Elasticsearch and visualizing them in Kibana.
 
+The environment is based on Docker Compose, so the only requirement is that you have [Docker](https://docs.docker.com/get-docker/) 
+installed in your machine.
+
 ### Kafka
 You will be using Kafka to store sample input data about payment transactions. A simple data generator [generate_source_data.py](generator/generate_source_data.py) is provided to
 continuously write new records to the `payment_msg` Kafka topic. Each record is structured as follows:
