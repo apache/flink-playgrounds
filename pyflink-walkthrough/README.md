@@ -100,12 +100,19 @@ docker-compose down
 ```shell script
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```
+Navigate to the [Flink Web UI](http://localhost:8081) after the job is submitted successfully, There will be a job in the running job list.
+Click the job to turn to the main page of it. You can see that the StreamGraph of the `payment_msg_proccessing` job is consist of two nodes, each of them has parallelism of 1.
+And there is a table in the bottom of the page shows the metrics of every node (bytes received/sent, records received/sent, etc).
 
-2. Navigate to the [Kibana UI](http://localhost:5601) and choose the pre-created dashboard `payment_dashboard`.
+![image](pic/submitted.png)
+
+![image](pic/detail.png)    
+
+2. Navigate to the [Kibana UI](http://localhost:5601) and choose the pre-created dashboard `payment_dashboard`, There will be a vertical bar chart and a pie chart demonstrating the total amount and the proportion of each province.
 
 ![image](pic/dash_board.png)
 
-![image](pic/final.png)
+![image](pic/chart.png)
 
 3. Stop the PyFlink job:
 
