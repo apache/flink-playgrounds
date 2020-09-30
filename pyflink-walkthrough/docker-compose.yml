@@ -89,7 +89,7 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
-  load-kibaba-dashboard:
+  load-kibana-dashboard:
     build: ./kibana
     command: ['/bin/bash', '-c', 'cat /tmp/load/load_ndjson.sh | tr -d "\r" | bash']
     depends_on:

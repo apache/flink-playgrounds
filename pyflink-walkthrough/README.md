@@ -42,11 +42,11 @@ $ docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --crea
 
 The transaction data will be processed with PyFlink using the Python script [payment_msg_processing.py](payment_msg_proccessing.py).
 This script will first map the `provinceId` in the input records to its corresponding province name using a Python UDF, 
-and then compute the sum of the transaction amounts for each province. 
+and then compute the sum of the transaction amounts for each province.
 
 ### ElasticSearch
 
-ElasticSearch is used to store the upstream processing results and to provide an efficient query service.
+ElasticSearch is used to store the results and to provide an efficient query service.
 
 ### Kibana
 
@@ -56,10 +56,9 @@ the results of your PyFlink pipeline.
 ## Setup
 
 As mentioned, the environment for this walkthrough is based on Docker Compose; It uses a custom image
-to spin up Flink (JobManager+TaskManager), Kafka+Zookeeper, the data generator, and Elasticsearch+Kibana
-containers.
+to spin up Flink (JobManager+TaskManager), Kafka+Zookeeper, the data generator, and Elasticsearch+Kibana containers.
 
-Your can find the [docker-compose.yaml](docker-compose.yml) file of the pyflink-walkthrough is located in the `pyflink-walkthrough` root directory.
+You can find the [docker-compose.yaml](docker-compose.yml) file of the pyflink-walkthrough in the `pyflink-walkthrough` root directory.
 
 ### Building the Docker image
 
@@ -100,15 +99,15 @@ docker-compose down
 ```shell script
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```
-Navigate to the [Flink Web UI](http://localhost:8081) after the job is submitted successfully, There will be a job in the running job list.
-Click the job to turn to the main page of it. You can see that the StreamGraph of the `payment_msg_proccessing` job is consist of two nodes, each of them has parallelism of 1.
-And there is a table in the bottom of the page shows the metrics of every node (bytes received/sent, records received/sent, etc).
+Navigate to the [Flink Web UI](http://localhost:8081) after the job is submitted successfully. There should be a job in the running job list.
+Click the job to get more details. You should see that the `StreamGraph` of the `payment_msg_proccessing` consists of two nodes, each with a parallelism of 1. 
+There is also a table in the bottom of the page that shows the metrics of every node (e.g. bytes received/sent, records received/sent).
 
 ![image](pic/submitted.png)
 
 ![image](pic/detail.png)    
 
-2. Navigate to the [Kibana UI](http://localhost:5601) and choose the pre-created dashboard `payment_dashboard`, There will be a vertical bar chart and a pie chart demonstrating the total amount and the proportion of each province.
+2. Navigate to the [Kibana UI](http://localhost:5601) and choose the pre-created dashboard `payment_dashboard`. There will be a vertical bar chart and a pie chart demonstrating the total amount and the proportion of each province.
 
 ![image](pic/dash_board.png)
 
@@ -128,8 +127,8 @@ the `pyflink-walkthrough` directory, since it is mounted on the `jobmanager` doc
 
 Ideas:
 * Add your own Kafka source table;
-* Create new index for the Elasticsearch sink;
-* Count the number of transactions, grouped by a 1 minute tumbling windows and payPlatform.
+* Create a new index for the Elasticsearch sink;
+* Count the number of transactions, grouped by a 1 minute [tumbling window](https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/tableApi.html#tumble-tumbling-windows) and `payPlatform`.
 
 After making a modification, you can submit the new job by executing the same command mentioned at 
 [Running the PyFlink Job](#running-the-pyflink-job)
@@ -137,5 +136,5 @@ After making a modification, you can submit the new job by executing the same co
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```
 
-Furthermore, you can also [create new kibana dashboards](https://www.elastic.co/guide/en/kibana/7.8/dashboard-create-new-dashboard.html) 
+Furthermore, you can also [create new Kibana dashboards](https://www.elastic.co/guide/en/kibana/7.8/dashboard-create-new-dashboard.html) 
 to visualize other aspects of the data in the Elasticsearch.
