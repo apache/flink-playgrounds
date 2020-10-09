@@ -60,6 +60,7 @@ public class ClickEventCount {
 	public static final String CHECKPOINTING_OPTION = "checkpointing";
 	public static final String EVENT_TIME_OPTION = "event-time";
 	public static final String BACKPRESSURE_OPTION = "backpressure";
+	public static final String OPERATOR_CHAINING_OPTION = "chaining";
 
 	public static final Time WINDOW_SIZE = Time.of(15, TimeUnit.SECONDS);
 
@@ -121,6 +122,7 @@ public class ClickEventCount {
 
 		boolean checkpointingEnabled = params.has(CHECKPOINTING_OPTION);
 		boolean eventTimeSemantics = params.has(EVENT_TIME_OPTION);
+		boolean enableChaining = params.has(OPERATOR_CHAINING_OPTION);
 
 		if (checkpointingEnabled) {
 			env.enableCheckpointing(1000);
@@ -130,7 +132,9 @@ public class ClickEventCount {
 			env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 		}
 
-		//disabling Operator chaining to make it easier to follow the Job in the WebUI
-		env.disableOperatorChaining();
+		if(!enableChaining){
+			//disabling Operator chaining to make it easier to follow the Job in the WebUI
+			env.disableOperatorChaining();
+		}
 	}
 }
