@@ -34,7 +34,7 @@ def log_processing():
     t_env = StreamTableEnvironment.create(stream_execution_environment=env)
     t_env.get_config().get_configuration().set_boolean("python.fn-execution.memory.managed", True)
 
-    source_ddl = """
+    create_kafka_source_ddl = """
             CREATE TABLE payment_msg(
                 createTime VARCHAR,
                 orderId BIGINT,
@@ -52,7 +52,7 @@ def log_processing():
             )
             """
 
-    es_sink_ddl = """
+    create_es_sink_ddl = """
             CREATE TABLE es_sink (
                 province VARCHAR PRIMARY KEY,
                 pay_amount DOUBLE
@@ -74,8 +74,8 @@ def log_processing():
             )
     """
 
-    t_env.execute_sql(source_ddl)
-    t_env.execute_sql(es_sink_ddl)
+    t_env.execute_sql(create_kafka_source_ddl)
+    t_env.execute_sql(create_es_sink_ddl)
     t_env.register_function('province_id_to_name', province_id_to_name)
 
     t_env.from_path("payment_msg") \
