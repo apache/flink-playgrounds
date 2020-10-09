@@ -26,7 +26,7 @@ import org.apache.kafka.common.serialization.Serializer;
 public class TransactionSerializer implements Serializer<Transaction> {
 
   private static final DateTimeFormatter formatter =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
   @Override
   public void configure(Map<String, ?> map, boolean b) {}
