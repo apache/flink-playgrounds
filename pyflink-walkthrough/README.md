@@ -114,7 +114,7 @@ sent to sinks - so don't be confused that noting is reported as being read from 
 
 ![image](pic/detail.png)    
 
-2. Navigate to the [Kibana UI](http://localhost:5601), open the menu list by clicking the menu button in the upper left corner, then choose the Dashboard item to turn the dashboard page and choose the pre-created dashboard `payment_dashboard`.
+2. Navigate to the [Kibana UI](http://localhost:5601), open the menu list by clicking the menu button in the upper left corner, then choose the Dashboard item to turn to the dashboard page and choose the pre-created dashboard `payment_dashboard`.
 There will be a vertical bar chart and a pie chart demonstrating the total amount and the proportion of each province.
 
 ![image](pic/dash_board.png)

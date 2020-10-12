@@ -22,7 +22,7 @@ until curl -s http://kibana:5601/login -o /dev/null; do
 done
 
 # The import service may not be ready, sleep 10s more.
-sleep 10
+sleep 20
 curl -X POST kibana:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/tmp/load/export.ndjson
 
 echo 'all loaded up'
