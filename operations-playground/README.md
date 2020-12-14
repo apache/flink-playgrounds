@@ -38,7 +38,7 @@ You can check if the playground was successfully started by accessing the WebUI 
 
 #### for Windows Users
 
-If you get the error "Unhandled exception: Filesharing has been cancelled", you should configure the file sharing in Docker Desktop before starting.
+If you get the error "Unhandled exception: Filesharing has been cancelled", you should configure file sharing in Docker Desktop before starting.
 In Settings > Resources > File Sharing, add the operations-playground/conf directory.
 
 ### Stopping the Playground
