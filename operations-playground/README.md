@@ -26,6 +26,15 @@ Build the Docker image by running
 docker-compose build
 ```
 
+### Preparing Checkpoints&Savepoints paths
+
+Create the checkpoints and savepoints directories on host machine. ('state.checkpoints.dir' and 'state.savepoints.dir' in the flink-conf.yaml)
+
+```bash
+mkdir -p /tmp/flink-checkpoints-directory
+mkdir -p /tmp/flink-savepoints-directory
+```
+
 ### Starting the Playground
 
 Once you built the Docker image, run the following command to start the playground
