@@ -5,7 +5,7 @@
 In this playground, you will learn how to build and run an end-to-end PyFlink pipeline for data analytics, covering the following steps:
 
 * Reading data from a Kafka source;
-* Creating data using a [UDF](https://ci.apache.org/projects/flink/flink-docs-release-1.11/dev/python/table-api-users-guide/udfs/python_udfs.html);
+* Creating data using a [UDF](https://ci.apache.org/projects/flink/flink-docs-release-1.12/dev/python/table-api-users-guide/udfs/python_udfs.html);
 * Performing a simple aggregation over the source data;
 * Writing the results to Elasticsearch and visualizing them in Kibana.
 
