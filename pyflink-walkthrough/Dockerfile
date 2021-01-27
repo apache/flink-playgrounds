@@ -20,8 +20,8 @@
 # Build PyFlink Playground Image
 ###############################################################################
 
-FROM flink:1.11.0-scala_2.11
-ARG FLINK_VERSION=1.11.1
+FROM apache/flink:1.12.1-scala_2.11-java8
+ARG FLINK_VERSION=1.12.1
 
 # Install pyflink
 RUN set -ex; \
@@ -33,7 +33,7 @@ RUN set -ex; \
   ln -s /usr/bin/pip3 /usr/bin/pip; \
   apt-get update; \
   python -m pip install --upgrade pip; \
-  pip install apache-flink==1.11.1; \
+  pip install apache-flink==1.12.1; \
   pip install kafka-python;
 
 

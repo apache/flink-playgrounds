@@ -20,7 +20,7 @@ version: "2.1"
 services:
   client:
     build: ../docker/ops-playground-image
-    image: apache/flink-ops-playground:1-FLINK-1.11-scala_2.11
+    image: apache/flink-ops-playground:1-FLINK-1.12-scala_2.11
     command: "flink run -d /opt/ClickCountJob.jar --bootstrap.servers kafka:9092 --checkpointing --event-time"
     depends_on:
       - jobmanager
@@ -30,29 +30,29 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   clickevent-generator:
-    image: apache/flink-ops-playground:1-FLINK-1.11-scala_2.11
+    image: apache/flink-ops-playground:1-FLINK-1.12-scala_2.11
     command: "java -classpath /opt/ClickCountJob.jar:/opt/flink/lib/* org.apache.flink.playgrounds.ops.clickcount.ClickEventGenerator --bootstrap.servers kafka:9092 --topic input"
     depends_on:
       - kafka
   jobmanager:
-    image: flink:1.11.0-scala_2.11
+    image: apache/flink:1.12.1-scala_2.11-java8
     command: "jobmanager.sh start-foreground"
     ports:
       - 8081:8081
     volumes:
       - ./conf:/opt/flink/conf
-      - flink-checkpoints-directory:/tmp/flink-checkpoints-directory
+      - /tmp/flink-checkpoints-directory:/tmp/flink-checkpoints-directory
       - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
-    image: flink:1.11.0-scala_2.11
+    image: apache/flink:1.12.1-scala_2.11-java8
     depends_on:
       - jobmanager
     command: "taskmanager.sh start-foreground"
     volumes:
       - ./conf:/opt/flink/conf
-      - flink-checkpoints-directory:/tmp/flink-checkpoints-directory
+      - /tmp/flink-checkpoints-directory:/tmp/flink-checkpoints-directory
       - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
@@ -69,5 +69,3 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     ports:
       - 9094:9094
-volumes:
-  flink-checkpoints-directory:
