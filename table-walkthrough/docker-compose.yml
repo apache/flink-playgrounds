@@ -19,7 +19,7 @@
 version: '2.1'
 services:
   jobmanager:
-    image: apache/flink-table-walkthrough:1-FLINK-1.12-scala_2.11
+    image: apache/flink-table-walkthrough:1-FLINK-1.13-scala_2.12
     build: .
     hostname: "jobmanager"
     expose:
@@ -33,7 +33,7 @@ services:
       - kafka
       - mysql
   taskmanager:
-    image: apache/flink-table-walkthrough:1-FLINK-1.12-scala_2.11
+    image: apache/flink-table-walkthrough:1-FLINK-1.13-scala_2.12
     build: .
     expose:
       - "6121"
@@ -80,7 +80,7 @@ services:
       - ../docker/mysql-spend-report-init:/docker-entrypoint-initdb.d
       - ./data:/data
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:7.5.8
     ports:
       - "3000:3000"
     depends_on:
