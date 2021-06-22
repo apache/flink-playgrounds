@@ -30,3 +30,6 @@ state.savepoints.dir: file:///tmp/flink-savepoints-directory
 
 heartbeat.interval: 1000
 heartbeat.timeout: 5000
+
+rest.flamegraph.enabled: true
+web.backpressure.refresh-interval: 10000
