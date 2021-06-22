@@ -32,7 +32,7 @@ RUN mvn clean install
 # Build Operations Playground Image
 ###############################################################################
 
-FROM apache/flink:1.12.1-scala_2.11-java8
+FROM apache/flink:1.13.1-scala_2.12-java8
 
 WORKDIR /opt/flink/bin
 

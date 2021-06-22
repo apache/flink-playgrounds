@@ -11,7 +11,7 @@ Currently, the following playgrounds are available:
 
 * The **Flink Operations Playground** (in the `operations-playground` folder) lets you explore and play with Flink's features to manage and operate stream processing jobs. You can witness how Flink recovers a job from a failure, upgrade and rescale a job, and query job metrics. The playground consists of a Flink cluster, a Kafka cluster and an example 
 Flink job. The playground is presented in detail in
-["Flink Operations Playground"](https://ci.apache.org/projects/flink/flink-docs-release-1.11/try-flink/flink-operations-playground.html), which is part of the _Try Flink_ section of the Flink documentation.
+["Flink Operations Playground"](https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/try-flink/flink-operations-playground.html), which is part of the _Try Flink_ section of the Flink documentation.
 
 * The **Table Walkthrough** (in the `table-walkthrough` folder) shows to use the Table API to build an analytics pipeline that reads streaming data from Kafka and writes results to MySQL, along with a real-time dashboard in Grafana. The walkthrough is presented in detail in ["Real Time Reporting with the Table API"](https://ci.apache.org/projects/flink/flink-docs-release-1.11/try-flink/table_api.html), which is part of the _Try Flink_ section of the Flink documentation.
 
