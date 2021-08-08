@@ -35,7 +35,7 @@ services:
     depends_on:
       - kafka
   jobmanager:
-    image: apache/flink:1.13.1-scala_2.12-java8
+    image: apache/flink:1.13.2-scala_2.12-java8
     command: "jobmanager.sh start-foreground"
     ports:
       - 8081:8081
@@ -46,7 +46,7 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
-    image: apache/flink:1.13.1-scala_2.12-java8
+    image: apache/flink:1.13.2-scala_2.12-java8
     depends_on:
       - jobmanager
     command: "taskmanager.sh start-foreground"
