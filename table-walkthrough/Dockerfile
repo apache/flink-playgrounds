@@ -20,7 +20,9 @@ FROM maven:3.6-jdk-8-slim AS builder
 
 COPY ./pom.xml /opt/pom.xml
 COPY ./src /opt/src
-RUN cd /opt; mvn clean install -Dmaven.test.skip
+RUN cd /opt; \
+    mvn spotless:apply;\
+    mvn clean install -Dmaven.test.skip
 
 FROM apache/flink:1.13.1-scala_2.12-java8
 

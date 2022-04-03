@@ -20,6 +20,7 @@ COPY ./src /opt/data-producer/src
 COPY ./pom.xml /opt/data-producer/pom.xml
 
 RUN cd /opt/data-producer; \
+    mvn spotless:apply;\
     mvn clean install
 
 FROM openjdk:8-jre
