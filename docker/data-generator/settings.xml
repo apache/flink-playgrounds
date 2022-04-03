@@ -1,0 +1,57 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+<-->
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository>/usr/share/maven/ref/repository</localRepository>
+
+  <mirrors>
+  <!--两个可用的mirror站点-->
+	 <!-- 阿里云的镜像站（首推，新站，速度暴快）顺便给阿里云栖开发者社区做个广告，点这里来云栖社区看看吧。-->
+	 <mirror>
+		<id>nexus-aliyun</id>
+		<name>Nexus aliyun</name>
+		<url>http://maven.aliyun.com/nexus/content/groups/public/</url> 
+		<mirrorOf>central</mirrorOf> 
+	 </mirror>
+	 <!-- 剩下就是国外的了，maven官方运维的2号仓库 -->
+	<!-- <mirror> 
+		<id>repo2</id> 
+		<name>Mirror from Maven Repo2</name> 
+		<url>http://repo2.maven.org/maven2/</url> 
+		<mirrorOf>central</mirrorOf> 
+	</mirror> -->
+	<!-- maven在UK架设的仓库（有时候速度会比官方2号仓库快） -->
+	<!-- <mirror> 
+		<id>ui</id> 
+		<name>Mirror from UK</name> 
+		<url>http://uk.maven.org/maven2/</url> 
+		<mirrorOf>central</mirrorOf> 
+	</mirror> -->
+	<!-- JBoss的仓库 -->
+	<!-- <mirror> 
+		<id>jboss-public-repository-group</id> 
+		<mirrorOf>central</mirrorOf> 
+		<name>JBoss Public Repository Group</name> 
+		<url>http://repository.jboss.org/nexus/content/groups/public</url> 
+	</mirror> -->
+
+  </mirrors>
+</settings>

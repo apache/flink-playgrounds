@@ -1,0 +1,6 @@
+#to add a  new mirror to docker image
+https://stackoverflow.com/questions/59412695/docker-maven-and-settings-xml
+
+
+# to get upto-date maven mirror
+https://developer.aliyun.com/mvn/guide

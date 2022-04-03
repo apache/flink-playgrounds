@@ -15,12 +15,18 @@
 
 FROM maven:3.6-jdk-8-slim AS builder
 
+# Since we want to execute the mvn command with RUN (and not when the container gets started),
+# we have to do here some manual setup which would be made by the maven's entrypoint script
+RUN mkdir -p /root/.m2 \
+    && mkdir /root/.m2/repository
+# Copy maven settings, containing repository configurations
+COPY settings.xml /root/.m2
+
 # Get data producer code and compile it
 COPY ./src /opt/data-producer/src
 COPY ./pom.xml /opt/data-producer/pom.xml
 
 RUN cd /opt/data-producer;\
-    mvn spotless:apply;\
     mvn clean install
 
 FROM openjdk:8-jre
@@ -29,6 +35,10 @@ COPY --from=builder /opt/data-producer/target/data-generator-*.jar /opt/data-gen
 
 RUN cd /opt
 
-COPY docker-entrypoint.sh /
+RUN touch docker-entrypoint.sh;\
+    chmod a+x docker-entrypoint.sh
+
+RUN echo '#!/bin/bash'>> docker-entrypoint.sh
+RUN echo 'java -classpath /opt/data-generator.jar org.apache.flink.playground.datagen.DataGenerator'>> docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
