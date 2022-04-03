@@ -64,12 +64,14 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   data-generator:
-      image: apache/data-generator:1
-      build: ../docker/data-generator
-      depends_on:
-        - kafka
+    image: apache/data-generator:1
+    build: ../docker/data-generator
+    depends_on:
+      - kafka
   mysql:
     image: mysql:8.0.19
+    ports:
+      - "3306:3306"
     command: --default-authentication-plugin=mysql_native_password --secure_file_priv=/data
     environment:
       MYSQL_USER: "sql-demo"
