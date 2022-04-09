@@ -1,0 +1,29 @@
+version: '2.1'
+services:
+  jobmanager:
+    image: apache/flink-filesys-walkthrough:1-FLINK-1.13-scala_2.12
+    build: .
+    hostname: "jobmanager"
+    expose:
+      - "6123"
+    ports:
+      - "8082:8081"
+    command: standalone-job
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    depends_on:
+      - kafka
+      - mysql
+  taskmanager:
+    image: apache/flink-table-walkthrough:1-FLINK-1.13-scala_2.12
+    build: .
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    links:
+      - jobmanager:jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
