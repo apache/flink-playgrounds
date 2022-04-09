@@ -18,20 +18,25 @@
 
 package org.apache.flink.playgrounds.filesystem;
 
-import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
 
 import static org.apache.flink.table.api.Expressions.*;
 
+
+/*
+    how to write and customize source
+    https://www.jianshu.com/p/4830c68ac921
+*/
 public class FileSystem {
 
-
+     private  static final String Line = "https://www.jianshu.com/p/4830c68ac921";
 
     public static void main(String[] args) throws Exception {
-        EnvironmentSettings settings = EnvironmentSettings.newInstance().build();
-        TableEnvironment tEnv = TableEnvironment.create(settings);
-
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStream<String>  source= env.fromSequence(0, Long.MAX_VALUE)
+                .map( i -> Line);
 
     }
 }
