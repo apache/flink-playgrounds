@@ -14,3 +14,8 @@ docker compose down -v
 
 # to enter into one container
 1. docker exec -it {id} /bin/sh
+
+
+# set tempoary env for git
+set http_proxy=http://localhost:10809
+set https_proxy=http://localhost:10809
