@@ -1,1 +1,7 @@
 fs.default-scheme: file:///var/flink_file_sys
+
+
+## issue comes from ide
+https://blog.csdn.net/weixin_38842096/article/details/85723335
+
+## run test

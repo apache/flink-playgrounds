@@ -19,7 +19,9 @@
 package org.apache.flink.playgrounds.filesystem;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
-import org.apache.flink.api.common.serialization.SimpleStringEncoder;
+import org.apache.flink.api.common.serialization.Encoder;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.connector.file.sink.FileSink;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -27,10 +29,8 @@ import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSin
 import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy;
 
 
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.flink.table.api.Expressions.*;
-
+import java.io.PrintStream;
+import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.OnCheckpointRollingPolicy;
 
 /*
     how to write and customize source
@@ -40,27 +40,31 @@ public class FileSystem {
 
      private  static final String Line = "https://www.jianshu.com/p/4830c68ac921";
 
-     private  static final String outputPath = "./file.txt";
+     private  static final String outputPath = "./fink_directory";
 
     public static void main(String[] args) throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
-        DataStream<String>  source= env.fromSequence(0, 10000)
-                .map( i -> Line);
+        DataStream<String>  source= env.fromSequence(0, 10)
+                .map( i -> Line + "-" + i.toString());
+        
+        FileSink<String> sink =
+                FileSink.forRowFormat(
+                                new Path(outputPath),
+                                (Encoder<String>)
+                                        (element, stream) -> {
+                                            PrintStream out = new PrintStream(stream);
+
+                                            out.println(element);
+                                        })
+                        .withBucketAssigner(new KeyBucketAssigner())
+                        .withRollingPolicy(OnCheckpointRollingPolicy.build())
+                        .build();
+        source.sinkTo(sink);
 
 
-        final StreamingFileSink<String> sink = StreamingFileSink
-                .forRowFormat(new Path(outputPath), new SimpleStringEncoder<String>("UTF-8"))
-                .withRollingPolicy(
-                        DefaultRollingPolicy.builder()
-                                .withRolloverInterval(TimeUnit.MINUTES.toMillis(15))
-                                .withInactivityInterval(TimeUnit.MINUTES.toMillis(5))
-                                .withMaxPartSize(1024 * 1024 * 1024)
-                                .build())
-                .build();
-
-        source.addSink(sink);
+        env.execute("StreamingFileSinkProgram");
 
     }
 }
