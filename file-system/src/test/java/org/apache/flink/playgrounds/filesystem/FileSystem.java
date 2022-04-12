@@ -33,6 +33,11 @@ public class FileSystem {
     
     @Test
     public void testReport() {
+        try{
+            FileScenario1.run(null);
+        }catch (Exception ex) {
+
+        }
 
     }
     
