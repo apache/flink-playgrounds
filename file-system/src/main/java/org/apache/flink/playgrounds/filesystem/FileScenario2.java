@@ -1,5 +1,7 @@
 package org.apache.flink.playgrounds.filesystem;
 
+import com.opencsv.CSVParser;
+import lombok.Data;
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.state.ListState;
@@ -8,14 +10,19 @@ import org.apache.flink.api.common.typeutils.base.IntSerializer;
 import org.apache.flink.connector.file.src.FileSource;
 import org.apache.flink.connector.file.src.reader.TextLineFormat;
 import org.apache.flink.core.fs.Path;
+import org.apache.flink.core.io.SimpleVersionedSerializer;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.sink.filesystem.BucketAssigner;
+import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.BasePathBucketAssigner;
+import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.SimpleVersionedStringSerializer;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class FileScenario2 {
@@ -30,7 +37,7 @@ public class FileScenario2 {
                         Integer.MAX_VALUE, Time.of(10L, TimeUnit.SECONDS)));
 
         // generate data, shuffle, sink
-        DataStream<String> source = env.addSource(new Generator(10, 10, 60));
+        DataStream<LineData> source = env.addSource(new Generator(10, 10, 60));
 
 
 
@@ -40,7 +47,7 @@ public class FileScenario2 {
      * data generator
      */
     private static final class Generator
-            implements SourceFunction<String>, CheckpointedFunction {
+            implements SourceFunction<LineData>, CheckpointedFunction {
 
         private static final long serialVersionUID = -2819385275681175792L;
 
@@ -61,11 +68,13 @@ public class FileScenario2 {
         }
 
         @Override
-        public void run(final SourceContext<String> ctx) throws Exception {
+        public void run(final SourceContext<LineData> ctx) throws Exception {
             while (numRecordsEmitted < recordsToEmit) {
                 synchronized (ctx.getCheckpointLock()) {
                     for (int i = 0; i < numKeys; i++) {
-                        ctx.collect(String.valueOf(i));
+                        LineData line = new LineData();
+                        line.setText(String.valueOf(i));
+                        ctx.collect(line);
                         numRecordsEmitted++;
                     }
                 }
@@ -102,20 +111,31 @@ public class FileScenario2 {
         }
     }
 
+    private  final class KeyBucketAssigner
+            extends BasePathBucketAssigner<LineData> {
 
-    public static final class Line {
+        private static final long serialVersionUID = 987325769970523326L;
+
+        @Override
+        public String getBucketId(final LineData element, final Context context) {
+            try{
+                CSVParser parser = new CSVParser();
+                String[] fields = parser.parseLine(element.text);
+                return fields[0];
+            }catch (IOException ex){
+                return "exception_folder";
+            }
+        }
+
+
+    }
+
+
+    @Data
+    private static final class LineData {
         private String text;
     }
 
 
-    public static final class Key {
-        private String enrollNumber;
-
-        private String department;
-
-        private String account;
-
-        private String subscriptionId;
-    }
 
 }
