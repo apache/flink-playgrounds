@@ -18,6 +18,7 @@
 
 package org.apache.flink.playgrounds.filesystem;
 
+import org.apache.flink.playgrounds.filesystem.scenario1.FileScenario1;
 import org.junit.Test;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package org.apache.flink.playgrounds.filesystem;
+package org.apache.flink.playgrounds.filesystem.scenario1;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.serialization.Encoder;

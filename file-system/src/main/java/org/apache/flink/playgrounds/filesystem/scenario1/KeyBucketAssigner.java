@@ -1,4 +1,4 @@
-package org.apache.flink.playgrounds.filesystem;
+package org.apache.flink.playgrounds.filesystem.scenario1;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.core.io.SimpleVersionedSerializer;

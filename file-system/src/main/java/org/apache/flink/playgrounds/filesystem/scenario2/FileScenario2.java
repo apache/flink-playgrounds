@@ -1,4 +1,4 @@
-package org.apache.flink.playgrounds.filesystem;
+package org.apache.flink.playgrounds.filesystem.scenario2;
 
 import com.opencsv.CSVParser;
 import lombok.Data;

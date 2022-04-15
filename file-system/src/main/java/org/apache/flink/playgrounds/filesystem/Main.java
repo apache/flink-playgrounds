@@ -19,12 +19,13 @@
 package org.apache.flink.playgrounds.filesystem;
 
 
+import org.apache.flink.playgrounds.filesystem.scenario1.FileScenario1;
 
 /*
     how to write and customize source
     https://www.jianshu.com/p/4830c68ac921
 */
-public class FileSystem {
+public class Main {
 
 
     public static void main(String[] args) throws Exception {
