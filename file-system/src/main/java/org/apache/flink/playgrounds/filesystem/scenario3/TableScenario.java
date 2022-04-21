@@ -54,30 +54,31 @@ public class TableScenario {
         * "附加信息 (AdditionalInfo)","(Tags)","(Store Service Identifier)",
         * "(Department Name)","(Cost Center)","(Unit of Measure)","(Resource Group)",
         * */
-        DataStream<Row> source =
-                env.addSource(new Generator(10, 600))
+        DataStream<LineData> rawSource =
+                env.addSource(new Generator(10, 600));
+
+        DataStream<Row> rowSource = rawSource
                         .map(el ->{
                             String[] contents = el.getContents();
-                                  return  Row.of(
-                                          contents[0],  contents[1],
-                                          contents[2], contents[3]
-                                  );
+                            return  Row.of(
+                                    contents[0],  contents[1],
+                                    contents[2], contents[3]
+                            );
                         })
                         .returns(Types.ROW_NAMED(
-                        new String[] {
-                                "AccountOwnerId", "AccountName",
-                                "ServiceAdministratorId", "SubscriptionId"
-                        },
-                        Types.STRING, Types.STRING,
-                        Types.STRING, Types.STRING));
-                ;
+                                new String[] {
+                                        "AccountOwnerId", "AccountName",
+                                        "ServiceAdministratorId", "SubscriptionId"
+                                },
+                                Types.STRING, Types.STRING,
+                                Types.STRING, Types.STRING));
 
         // add a printing sink and execute in DataStream API
 
         // try to find a better way to create temporary view
             //        Table tableSource =
             //                tableEnv.fromChangelogStream(source);
-        tableEnv.createTemporaryView("InputTable", source);
+        tableEnv.createTemporaryView("InputTable", rowSource);
 
         tableEnv.createTable("azureDataSink", TableDescriptor.forConnector("filesystem")
                 .schema(Schema.newBuilder()
@@ -93,7 +94,9 @@ public class TableScenario {
                 .build());
 
         Table table1 = tableEnv.from("InputTable");
-         table1.executeInsert("azureDataSink");
+        table1.executeInsert("azureDataSink");
+
+         rawSource.print();
 
         env.execute();
     }
