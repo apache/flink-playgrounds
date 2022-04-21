@@ -30,11 +30,11 @@ public class TableScenario {
     public static void run() throws Exception {
         // create environments of both APIs
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(4);
+        env.setParallelism(2);
         env.enableCheckpointing(5000L);
-        env.setRestartStrategy(
-                RestartStrategies.fixedDelayRestart(
-                        Integer.MAX_VALUE, Time.of(10L, TimeUnit.SECONDS)));
+//        env.setRestartStrategy(
+//                RestartStrategies.fixedDelayRestart(
+//                        Integer.MAX_VALUE, Time.of(10L, TimeUnit.SECONDS)));
 
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
@@ -98,6 +98,8 @@ public class TableScenario {
 
          rawSource.print();
 
+       // rawSource
+
         env.execute();
     }
 
@@ -155,11 +157,14 @@ public class TableScenario {
                 }
             }
 
+            int timeout = 0;
 
-
-            while (!canceled) {
-                Thread.sleep(50);
+            while (timeout < 20 ) {
+                Thread.sleep(1000);
+                ++timeout;
             }
+
+            ctx.close();
         }
 
         @Override
