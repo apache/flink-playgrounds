@@ -23,19 +23,27 @@
 FROM apache/flink:1.13.1-scala_2.12-java8
 ARG FLINK_VERSION=1.13.1
 
-# Install pyflink
+# Install python3.7 and pyflink
+# Pyflink does not yet function with python3.9, and this image is build on
+# debian bullseye which ships with that version, so build python3.7 here.
 RUN set -ex; \
-  apt-get update; \
-  apt-get -y install python3; \
-  apt-get -y install python3-pip; \
-  apt-get -y install python3-dev; \
-  ln -s /usr/bin/python3 /usr/bin/python; \
-  ln -s /usr/bin/pip3 /usr/bin/pip; \
-  apt-get update; \
+  apt-get update && \
+  apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libffi-dev && \
+  wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz && \
+  tar -xvf Python-3.7.9.tgz && \
+  cd Python-3.7.9 && \
+  ./configure --without-tests --enable-shared && \
+  make -j4 && \
+  make install && \
+  ldconfig /usr/local/lib && \
+  cd .. && rm -f Python-3.7.9.tgz && rm -rf Python-3.7.9 && \
+  ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+  ln -s /usr/local/bin/pip3 /usr/local/bin/pip && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* && \
   python -m pip install --upgrade pip; \
   pip install apache-flink==1.13.1; \
   pip install kafka-python;
-
 
 # Download connector libraries
 RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/${FLINK_VERSION}/flink-json-${FLINK_VERSION}.jar; \
