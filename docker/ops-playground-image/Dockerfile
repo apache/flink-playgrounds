@@ -20,7 +20,7 @@
 # Build Click Count Job
 ###############################################################################
 
-FROM maven:3.6-jdk-8-slim AS builder
+FROM maven:3.8-jdk-8-slim AS builder
 
 # Get Click Count job and compile it
 COPY ./java/flink-playground-clickcountjob /opt/flink-playground-clickcountjob
