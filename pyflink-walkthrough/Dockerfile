@@ -20,8 +20,8 @@
 # Build PyFlink Playground Image
 ###############################################################################
 
-FROM apache/flink:1.13.1-scala_2.12-java8
-ARG FLINK_VERSION=1.13.1
+FROM apache/flink:1.14.4-scala_2.12-java8
+ARG FLINK_VERSION=1.14.4
 
 # Install python3.7 and pyflink
 # Pyflink does not yet function with python3.9, and this image is build on
@@ -42,7 +42,7 @@ RUN set -ex; \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \
   python -m pip install --upgrade pip; \
-  pip install apache-flink==1.13.1; \
+  pip install apache-flink==1.14.4; \
   pip install kafka-python;
 
 # Download connector libraries

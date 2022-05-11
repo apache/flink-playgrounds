@@ -42,35 +42,29 @@ def log_processing():
                 payPlatform INT,
                 provinceId INT
             ) WITH (
-              'connector.type' = 'kafka',
-              'connector.version' = 'universal',
-              'connector.topic' = 'payment_msg',
-              'connector.properties.bootstrap.servers' = 'kafka:9092',
-              'connector.properties.group.id' = 'test_3',
-              'connector.startup-mode' = 'latest-offset',
-              'format.type' = 'json'
+              'connector' = 'kafka',
+              'topic' = 'payment_msg',
+              'properties.bootstrap.servers' = 'kafka:9092',
+              'properties.group.id' = 'test_3',
+              'scan.startup.mode' = 'latest-offset',
+              'format' = 'json'
             )
             """
 
     create_es_sink_ddl = """
-            CREATE TABLE es_sink (
+            CREATE TABLE es_sink(
                 province VARCHAR PRIMARY KEY,
                 pay_amount DOUBLE
             ) with (
-                'connector.type' = 'elasticsearch',
-                'connector.version' = '7',
-                'connector.hosts' = 'http://elasticsearch:9200',
-                'connector.index' = 'platform_pay_amount_1',
-                'connector.document-type' = 'payment',
-                'update-mode' = 'upsert',
-                'connector.flush-on-checkpoint' = 'true',
-                'connector.key-delimiter' = '$',
-                'connector.key-null-literal' = 'n/a',
-                'connector.bulk-flush.max-size' = '42mb',
-                'connector.bulk-flush.max-actions' = '32',
-                'connector.bulk-flush.interval' = '1000',
-                'connector.bulk-flush.backoff.delay' = '1000',
-                'format.type' = 'json'
+                'connector' = 'elasticsearch-7',
+                'hosts' = 'http://elasticsearch:9200',
+                'index' = 'platform_pay_amount_1',
+                'document-id.key-delimiter' = '$',
+                'sink.bulk-flush.max-size' = '42mb',
+                'sink.bulk-flush.max-actions' = '32',
+                'sink.bulk-flush.interval' = '1000',
+                'sink.bulk-flush.backoff.delay' = '1000',
+                'format' = 'json'
             )
     """
 
