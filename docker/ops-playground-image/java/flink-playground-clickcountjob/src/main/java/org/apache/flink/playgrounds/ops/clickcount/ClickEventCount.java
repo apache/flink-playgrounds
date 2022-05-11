@@ -19,6 +19,9 @@ package org.apache.flink.playgrounds.ops.clickcount;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.playgrounds.ops.clickcount.functions.BackpressureMap;
 import org.apache.flink.playgrounds.ops.clickcount.functions.ClickEventStatisticsCollector;
@@ -34,7 +37,6 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTime
 import org.apache.flink.streaming.api.windowing.assigners.WindowAssigner;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -115,13 +117,18 @@ public class ClickEventCount {
 				new ClickEventStatisticsCollector())
 			.name("ClickEvent Counter");
 
-		statistics
-			.addSink(new FlinkKafkaProducer<>(
-				outputTopic,
-				new ClickEventStatisticsSerializationSchema(outputTopic),
-				kafkaProps,
-				FlinkKafkaProducer.Semantic.AT_LEAST_ONCE))
-			.name("ClickEventStatistics Sink");
+		statistics.sinkTo(
+				KafkaSink.<ClickEventStatistics>builder()
+						.setBootstrapServers(kafkaProps.getProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG))
+						.setKafkaProducerConfig(kafkaProps)
+						.setRecordSerializer(
+								KafkaRecordSerializationSchema.builder()
+										.setTopic(outputTopic)
+										.setValueSerializationSchema(new ClickEventStatisticsSerializationSchema())
+										.build())
+						.setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+						.build())
+				.name("ClickEventStatistics Sink");
 
 		env.execute("Click Event Count");
 	}
