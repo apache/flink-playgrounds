@@ -61,8 +61,6 @@ services:
       HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "kafka:1:1"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
   data-generator:
       image: apache/data-generator:1
       build: ../docker/data-generator
