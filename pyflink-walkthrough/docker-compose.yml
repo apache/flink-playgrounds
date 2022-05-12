@@ -20,7 +20,7 @@ version: '2.1'
 services:
   jobmanager:
     build: .
-    image: pyflink/pyflink:1.13.1-scala_2.12
+    image: pyflink/pyflink:1.14.4-scala_2.12
     volumes:
       - .:/opt/pyflink-walkthrough
     hostname: "jobmanager"
@@ -32,7 +32,7 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
-    image: pyflink/pyflink:1.13.1-scala_2.12
+    image: pyflink/pyflink:1.14.4-scala_2.12
     volumes:
     - .:/opt/pyflink-walkthrough
     expose:
@@ -50,7 +50,7 @@ services:
     ports:
       - "2181:2181"
   kafka:
-    image: wurstmeister/kafka:2.12-2.2.1
+    image: wurstmeister/kafka:2.13-2.8.1
     ports:
       - "9092:9092"
     depends_on:
@@ -59,8 +59,6 @@ services:
       HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "payment_msg:1:1"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
   generator:
     build: generator
     image: generator:1.0
