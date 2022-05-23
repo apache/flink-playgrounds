@@ -19,7 +19,7 @@
 version: '2.1'
 services:
   jobmanager:
-    image: apache/flink-table-walkthrough:1-FLINK-1.13-scala_2.12
+    image: apache/flink-table-walkthrough:1-FLINK-1.14-scala_2.12
     build: .
     hostname: "jobmanager"
     expose:
@@ -33,7 +33,7 @@ services:
       - kafka
       - mysql
   taskmanager:
-    image: apache/flink-table-walkthrough:1-FLINK-1.13-scala_2.12
+    image: apache/flink-table-walkthrough:1-FLINK-1.14-scala_2.12
     build: .
     expose:
       - "6121"
@@ -50,7 +50,7 @@ services:
     ports:
       - "2181:2181"
   kafka:
-    image: wurstmeister/kafka:2.12-2.2.1
+    image: wurstmeister/kafka:2.13-2.8.1
     ports:
       - "9092:9092"
     depends_on:

@@ -45,6 +45,7 @@ public class SpendReport {
                 "    'connector' = 'kafka',\n" +
                 "    'topic'     = 'transactions',\n" +
                 "    'properties.bootstrap.servers' = 'kafka:9092',\n" +
+                "    'scan.startup.mode' = 'earliest-offset',\n" +
                 "    'format'    = 'csv'\n" +
                 ")");
 
