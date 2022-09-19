@@ -74,10 +74,16 @@ under the License.
         </dependency>
         <dependency>
            <groupId>org.apache.flink</groupId>
-           <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
+           <artifactId>flink-table-planner-loader</artifactId>
            <version>${flink.version}</version>
-           <scope>test</scope>
-       </dependency>
+           <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-runtime</artifactId>
+            <version>${flink.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients</artifactId>
