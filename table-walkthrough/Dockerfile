@@ -22,12 +22,12 @@ COPY ./pom.xml /opt/pom.xml
 COPY ./src /opt/src
 RUN cd /opt; mvn clean install -Dmaven.test.skip
 
-FROM apache/flink:1.14.4-scala_2.12-java8
+FROM apache/flink:1.15.2-scala_2.12-java8
 
 # Download connector libraries
-RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka_2.12/1.14.4/flink-sql-connector-kafka_2.12-1.14.4.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc_2.12/1.14.4/flink-connector-jdbc_2.12-1.14.4.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/1.14.4/flink-csv-1.14.4.jar; \
+RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/1.15.2/flink-sql-connector-kafka-1.15.2.jar; \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc/1.15.2/flink-connector-jdbc-1.15.2.jar; \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/1.15.2/flink-csv-1.15.2.jar; \
     wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar;
 
 COPY --from=builder /opt/target/spend-report-*.jar /opt/flink/usrlib/spend-report.jar
