@@ -20,8 +20,8 @@
 # Build PyFlink Playground Image
 ###############################################################################
 
-FROM apache/flink:1.14.4-scala_2.12-java8
-ARG FLINK_VERSION=1.14.4
+FROM apache/flink:1.15.2-scala_2.12-java8
+ARG FLINK_VERSION=1.15.2
 
 # Install python3.7 and pyflink
 # Pyflink does not yet function with python3.9, and this image is build on
@@ -42,13 +42,13 @@ RUN set -ex; \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \
   python -m pip install --upgrade pip; \
-  pip install apache-flink==1.14.4; \
+  pip install apache-flink==1.15.2; \
   pip install kafka-python;
 
 # Download connector libraries
 RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/${FLINK_VERSION}/flink-json-${FLINK_VERSION}.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka_2.12/${FLINK_VERSION}/flink-sql-connector-kafka_2.12-${FLINK_VERSION}.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-elasticsearch7_2.12/${FLINK_VERSION}/flink-sql-connector-elasticsearch7_2.12-${FLINK_VERSION}.jar;
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/${FLINK_VERSION}/flink-sql-connector-kafka-${FLINK_VERSION}.jar; \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-elasticsearch7/${FLINK_VERSION}/flink-sql-connector-elasticsearch7-${FLINK_VERSION}.jar;
 
 
 RUN echo "taskmanager.memory.jvm-metaspace.size: 512m" >> /opt/flink/conf/flink-conf.yaml;
