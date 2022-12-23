@@ -20,19 +20,19 @@
 # Build Click Count Job
 ###############################################################################
 
-FROM maven:3.8-jdk-8-slim AS builder
+FROM maven:3.8.6-eclipse-temurin-17 AS builder
 
 # Get Click Count job and compile it
 COPY ./java/flink-playground-clickcountjob /opt/flink-playground-clickcountjob
 WORKDIR /opt/flink-playground-clickcountjob
-RUN mvn clean install
+RUN mvn clean verify
 
 
 ###############################################################################
 # Build Operations Playground Image
 ###############################################################################
 
-FROM apache/flink:1.15.2-scala_2.12-java8
+FROM apache/flink:1.16.0-scala_2.12-java11
 
 WORKDIR /opt/flink/bin
 

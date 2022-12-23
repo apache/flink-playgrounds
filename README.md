@@ -22,4 +22,4 @@ Flink job. The playground is presented in detail in
 Apache Flink is an open source project of The Apache Software Foundation (ASF).
 
 Flink is distributed data processing framework with powerful stream and batch processing capabilities.
-Learn more about Flink at [http://flink.apache.org/](https://flink.apache.org/)
+Learn more about Flink at [https://flink.apache.org/](https://flink.apache.org/)
