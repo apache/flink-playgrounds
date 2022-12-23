@@ -22,7 +22,7 @@ under the License.
 
 	<groupId>org.apache.flink</groupId>
 	<artifactId>flink-playground-clickcountjob</artifactId>
-	<version>1-FLINK-1.15_2.12</version>
+	<version>1-FLINK-1.16_2.12</version>
 
 	<name>flink-playground-clickcountjob</name>
 	<packaging>jar</packaging>
@@ -44,11 +44,10 @@ under the License.
 
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<flink.version>1.15.2</flink.version>
-		<java.version>1.8</java.version>
+		<flink.version>1.16.0</flink.version>
+		<java.version>11</java.version>
 		<scala.binary.version>2.12</scala.binary.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
 	</properties>
 
 	<dependencies>
@@ -98,11 +97,7 @@ under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
+				<version>3.10.1</version>
 			</plugin>
 
 			<!-- We use the maven-shade plugin to create a fat jar that contains all necessary dependencies. -->

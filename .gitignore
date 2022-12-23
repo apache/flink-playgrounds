@@ -4,3 +4,9 @@
 **/*.iml
 .DS_Store
 .vscode
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
