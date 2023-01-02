@@ -19,7 +19,6 @@
 package org.apache.flink.playground.datagen;
 
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import org.apache.flink.playground.datagen.model.Transaction;
 import org.apache.flink.playground.datagen.model.TransactionSerializer;
@@ -31,9 +30,6 @@ import org.apache.kafka.common.serialization.LongSerializer;
 
 /** Generates CSV transaction records at a rate */
 public class Producer implements Runnable, AutoCloseable {
-
-  private static final DateTimeFormatter formatter =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
   private volatile boolean isRunning;
 

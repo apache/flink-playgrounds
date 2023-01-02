@@ -16,11 +16,11 @@
 # limitations under the License.
 ################################################################################
 
-FROM maven:3.8-jdk-8-slim AS builder
+FROM maven:3.8-eclipse-temurin-17 AS builder
 
 COPY ./pom.xml /opt/pom.xml
 COPY ./src /opt/src
-RUN cd /opt; mvn clean install -Dmaven.test.skip
+RUN cd /opt; mvn clean verify -Dmaven.test.skip
 
 FROM apache/flink:1.15.2-scala_2.12-java8
 

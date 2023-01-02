@@ -13,16 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM maven:3.8-jdk-8-slim AS builder
+FROM maven:3.8-eclipse-temurin-17 AS builder
 
 # Get data producer code and compile it
 COPY ./src /opt/data-producer/src
 COPY ./pom.xml /opt/data-producer/pom.xml
 
 RUN cd /opt/data-producer; \
-    mvn clean install
+    mvn clean verify
 
-FROM openjdk:8-jre
+FROM eclipse-temurin:17
 
 COPY --from=builder /opt/data-producer/target/data-generator-*.jar /opt/data-generator.jar
 

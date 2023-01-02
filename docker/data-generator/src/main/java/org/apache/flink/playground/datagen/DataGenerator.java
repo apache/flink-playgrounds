@@ -18,6 +18,7 @@
 
 package org.apache.flink.playground.datagen;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,11 @@ public class DataGenerator {
 
   private static final Logger LOG = LoggerFactory.getLogger(DataGenerator.class);
 
-  private static final String KAFKA = "kafka:9092";
+  private static final String KAFKA =
+      Optional.ofNullable(System.getenv("DATAGEN_KAFKA")).orElse("kafka:9092");
 
-  private static final String TOPIC = "transactions";
+  private static final String TOPIC =
+      Optional.ofNullable(System.getenv("DATAGEN_TOPIC")).orElse("transactions");
 
   public static void main(String[] args) {
     Producer producer = new Producer(KAFKA, TOPIC);
