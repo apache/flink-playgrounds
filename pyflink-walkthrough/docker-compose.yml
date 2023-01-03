@@ -20,7 +20,7 @@ version: '2.1'
 services:
   jobmanager:
     build: .
-    image: pyflink/pyflink:1.15.2-scala_2.12
+    image: pyflink/pyflink:1.16.0-scala_2.12
     volumes:
       - .:/opt/pyflink-walkthrough
     hostname: "jobmanager"
@@ -32,7 +32,7 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
-    image: pyflink/pyflink:1.15.2-scala_2.12
+    image: pyflink/pyflink:1.16.0-scala_2.12
     volumes:
     - .:/opt/pyflink-walkthrough
     expose:
@@ -47,6 +47,10 @@ services:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     ports:
       - "2181:2181"
   kafka:
