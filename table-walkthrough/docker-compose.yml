@@ -67,7 +67,7 @@ services:
       depends_on:
         - kafka
   mysql:
-    image: mysql:8.0.19
+    image: mysql:8.0.31
     command: --default-authentication-plugin=mysql_native_password --secure_file_priv=/data
     environment:
       MYSQL_USER: "sql-demo"
