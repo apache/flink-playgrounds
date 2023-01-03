@@ -16,18 +16,18 @@
 # limitations under the License.
 ################################################################################
 
-FROM maven:3.8-jdk-8-slim AS builder
+FROM maven:3.8-eclipse-temurin-17 AS builder
 
 COPY ./pom.xml /opt/pom.xml
 COPY ./src /opt/src
-RUN cd /opt; mvn clean install -Dmaven.test.skip
+RUN cd /opt; mvn clean verify -Dmaven.test.skip
 
-FROM apache/flink:1.15.2-scala_2.12-java8
+FROM apache/flink:1.16.0-scala_2.12-java11
 
 # Download connector libraries
-RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/1.15.2/flink-sql-connector-kafka-1.15.2.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc/1.15.2/flink-connector-jdbc-1.15.2.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/1.15.2/flink-csv-1.15.2.jar; \
+RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/1.16.0/flink-sql-connector-kafka-1.16.0.jar; \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc/1.16.0/flink-connector-jdbc-1.16.0.jar; \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/1.16.0/flink-csv-1.16.0.jar; \
     wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar;
 
 COPY --from=builder /opt/target/spend-report-*.jar /opt/flink/usrlib/spend-report.jar

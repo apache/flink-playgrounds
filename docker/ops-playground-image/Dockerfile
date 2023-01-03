@@ -20,7 +20,7 @@
 # Build Click Count Job
 ###############################################################################
 
-FROM maven:3.8.6-eclipse-temurin-17 AS builder
+FROM maven:3.8-eclipse-temurin-17 AS builder
 
 # Get Click Count job and compile it
 COPY ./java/flink-playground-clickcountjob /opt/flink-playground-clickcountjob
