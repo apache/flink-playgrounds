@@ -18,6 +18,7 @@
 
 from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic
 from pyflink.table import StreamTableEnvironment, DataTypes, EnvironmentSettings
+from pyflink.table.expressions import call, col
 from pyflink.table.udf import udf
 
 
@@ -73,9 +74,9 @@ def log_processing():
     t_env.register_function('province_id_to_name', province_id_to_name)
 
     t_env.from_path("payment_msg") \
-        .select("province_id_to_name(provinceId) as province, payAmount") \
-        .group_by("province") \
-        .select("province, sum(payAmount) as pay_amount") \
+        .select(call('province_id_to_name', col('provinceId')).alias("province"), col('payAmount')) \
+        .group_by(col('province')) \
+        .select(col('province'), call('sum', col('payAmount').alias("pay_amount"))) \
         .execute_insert("es_sink")
 
 

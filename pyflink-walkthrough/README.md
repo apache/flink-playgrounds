@@ -5,14 +5,15 @@
 In this playground, you will learn how to build and run an end-to-end PyFlink pipeline for data analytics, covering the following steps:
 
 * Reading data from a Kafka source;
-* Creating data using a [UDF](https://ci.apache.org/projects/flink/flink-docs-release-1.14/dev/python/table-api-users-guide/udfs/python_udfs.html);
+* Creating data using a [UDF](https://ci.apache.org/projects/flink/flink-docs-release-1.16/dev/python/table-api-users-guide/udfs/python_udfs.html);
 * Performing a simple aggregation over the source data;
 * Writing the results to Elasticsearch and visualizing them in Kibana.
 
 The environment is based on Docker Compose, so the only requirement is that you have [Docker](https://docs.docker.com/get-docker/) 
-installed in your machine.
+installed on your machine.
 
-### Kafka
+### Apache Kafka
+
 You will be using Kafka to store sample input data about payment transactions. A simple data generator [generate_source_data.py](generator/generate_source_data.py) is provided to
 continuously write new records to the `payment_msg` Kafka topic. Each record is structured as follows:
  
@@ -41,13 +42,13 @@ t_env.from_path("payment_msg") \ # Get the created Kafka source table named paym
 ```
 
 
-### ElasticSearch
+### Elasticsearch
 
-ElasticSearch is used to store the results and to provide an efficient query service.
+Elasticsearch is used to store the results and to provide an efficient query service.
 
 ### Kibana
 
-Kibana is an open source data visualization dashboard for ElasticSearch. You will use it to visualize 
+Kibana is an open source data visualization dashboard for Elasticsearch. You will use it to visualize
 the total transaction paymentAmount and proportion for each provinces in this PyFlink pipeline through a dashboard.
 
 ## Setup
@@ -85,6 +86,7 @@ One way of checking if the playground was successfully started is to access some
 ### Checking the Kafka service
 
 You can use the following command to read data from the Kafka topic and check whether it's generated correctly:
+
 ```shell script
 $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic payment_msg
 {"createTime":"2020-07-27 09:25:32.77","orderId":1595841867217,"payAmount":7732.44,"payPlatform":0,"provinceId":3}
@@ -93,7 +95,9 @@ $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9
 {"createTime":"2020-07-27 09:25:34.216","orderId":1595841867220,"payAmount":15341.11,"payPlatform":0,"provinceId":1}
 {"createTime":"2020-07-27 09:25:34.698","orderId":1595841867221,"payAmount":37504.42,"payPlatform":0,"provinceId":0}
 ```
+
 You can also create a new topic by executing the following command:
+
 ```shell script
 $ docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --create --topic <YOUR-TOPIC-NAME> --partitions 8 --replication-factor 1
 ```
@@ -101,9 +105,11 @@ $ docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --crea
 ## Running the PyFlink job
 
 1. Submit the PyFlink job.
+
 ```shell script
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```
+
 Navigate to the [Flink Web UI](http://localhost:8081) after the job is submitted successfully. There should be a job in the running job list.
 Click the job to get more details. You should see that the `StreamGraph` of the `payment_msg_proccessing` consists of two nodes, each with a parallelism of 1. 
 There is also a table in the bottom of the page that shows some metrics for each node (e.g. bytes received/sent, records received/sent). Note that Flink's metrics only
@@ -147,7 +153,8 @@ Ideas:
 * Count the number of transactions, grouped by a 1 minute [tumbling window](https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/tableApi.html#tumble-tumbling-windows) and `payPlatform`.
 
 After making a modification, you can submit the new job by executing the same command mentioned at 
-[Running the PyFlink Job](#running-the-pyflink-job)
+[Running the PyFlink Job](#running-the-pyflink-job):
+
 ```shell script
 $ docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink-walkthrough/payment_msg_proccessing.py -d
 ```

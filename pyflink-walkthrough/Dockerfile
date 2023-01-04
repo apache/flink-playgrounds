@@ -20,15 +20,15 @@
 # Build PyFlink Playground Image
 ###############################################################################
 
-FROM apache/flink:1.15.2-scala_2.12-java8
-ARG FLINK_VERSION=1.15.2
+FROM apache/flink:1.16.0-scala_2.12-java8
+ARG FLINK_VERSION=1.16.0
 
 # Install python3.7 and pyflink
 # Pyflink does not yet function with python3.9, and this image is build on
 # debian bullseye which ships with that version, so build python3.7 here.
 RUN set -ex; \
   apt-get update && \
-  apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libffi-dev && \
+  apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libffi-dev lzma liblzma-dev && \
   wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz && \
   tar -xvf Python-3.7.9.tgz && \
   cd Python-3.7.9 && \
@@ -42,7 +42,7 @@ RUN set -ex; \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* && \
   python -m pip install --upgrade pip; \
-  pip install apache-flink==1.15.2; \
+  pip install apache-flink==${FLINK_VERSION}; \
   pip install kafka-python;
 
 # Download connector libraries
