@@ -41,8 +41,7 @@ services:
       - 8081:8081
     volumes:
       - ./conf:/opt/flink/conf
-      - /tmp/flink-checkpoints-directory:/tmp/flink-checkpoints-directory
-      - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
+      - flink_data:/tmp/
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   taskmanager:
@@ -52,8 +51,7 @@ services:
     command: "taskmanager.sh start-foreground"
     volumes:
       - ./conf:/opt/flink/conf
-      - /tmp/flink-checkpoints-directory:/tmp/flink-checkpoints-directory
-      - /tmp/flink-savepoints-directory:/tmp/flink-savepoints-directory
+      - flink_data:/tmp/
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   zookeeper:
@@ -70,3 +68,5 @@ services:
     ports:
       - 9092:9092
       - 9094:9094
+volumes:
+  flink_data:
