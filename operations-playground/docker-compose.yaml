@@ -27,6 +27,7 @@ services:
       - kafka
     volumes:
       - ./conf:/opt/flink/conf
+      - flink_data:/tmp/
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   clickevent-generator:
