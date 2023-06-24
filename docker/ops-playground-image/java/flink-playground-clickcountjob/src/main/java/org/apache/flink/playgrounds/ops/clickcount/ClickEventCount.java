@@ -94,6 +94,7 @@ public class ClickEventCount {
 
 		WatermarkStrategy<ClickEvent> watermarkStrategy = WatermarkStrategy
 				.<ClickEvent>forBoundedOutOfOrderness(Duration.ofMillis(200))
+				.withIdleness(Duration.ofSeconds(5))
 				.withTimestampAssigner((clickEvent, l) -> clickEvent.getTimestamp().getTime());
 
 		DataStream<ClickEvent> clicks = env.fromSource(source, watermarkStrategy, "ClickEvent Source");
