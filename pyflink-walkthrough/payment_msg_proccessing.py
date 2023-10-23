@@ -76,7 +76,7 @@ def log_processing():
     t_env.from_path("payment_msg") \
         .select(call('province_id_to_name', col('provinceId')).alias("province"), col('payAmount')) \
         .group_by(col('province')) \
-        .select(col('province'), call('sum', col('payAmount').alias("pay_amount"))) \
+        .select(col('province'), call('sum', col('payAmount')).alias("pay_amount")) \
         .execute_insert("es_sink")
 
 
