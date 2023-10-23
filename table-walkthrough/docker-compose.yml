@@ -76,7 +76,7 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
     volumes:
       - ../docker/mysql-spend-report-init:/docker-entrypoint-initdb.d
-      - ./data:/data
+      - mysqldata:/data
   grafana:
     image: grafana/grafana:7.5.8
     ports:
@@ -87,3 +87,6 @@ services:
       - ../docker/grafana-spend-report-init/provisioning/:/etc/grafana/provisioning/
       - ../docker/grafana-spend-report-init/dashboard.json:/etc/grafana/dashboard.json
       - ../docker/grafana-spend-report-init/grafana.ini:/etc/grafana/grafana.ini
+
+volumes:
+  mysqldata:
