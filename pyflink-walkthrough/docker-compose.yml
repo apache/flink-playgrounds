@@ -16,7 +16,6 @@
 # limitations under the License.
 ################################################################################
 
-version: '2.1'
 services:
   jobmanager:
     build: .
@@ -45,24 +44,15 @@ services:
       - jobmanager:jobmanager
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
-  zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-    ports:
-      - "2181:2181"
   kafka:
-    image: wurstmeister/kafka:2.13-2.8.1
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
+    image: 'bitnami/kafka:3.9.0'
     environment:
-      HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "payment_msg:1:1"
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
   generator:
     build: generator
     image: generator:1.0
