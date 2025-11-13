@@ -55,7 +55,7 @@ services:
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
   kafka:
-    image: 'bitnami/kafka:3.9.0'
+    image: 'bitnamilegacy/kafka:3.9.0'
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_NUM_PARTITIONS=2
